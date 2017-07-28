@@ -5,9 +5,11 @@ import (
 	"fmt"
 	html "html/template"
 	"path/filepath"
+	"regexp"
 	"text/template"
 
 	"github.com/ghodss/yaml"
+	bftext "github.com/gholt/blackfridaytext"
 	"github.com/go-gomail/gomail"
 	"github.com/jtacoma/uritemplates"
 	"github.com/microcosm-cc/bluemonday"
@@ -205,8 +207,12 @@ func renderPlain(body []byte, layoutPath string, ctx *tmplContext) (string, erro
 		return "", err
 	}
 
-	// Strip all HTML from campaign
+	// Render text & strip all HTML from campaign
+	body = bftext.MarkdownToTextNoMetadata(body, &bftext.Options{})
 	body = bluemonday.StrictPolicy().SanitizeBytes(body)
+
+	// Strip leading spaces/tabs from each line
+	body = regexp.MustCompile("(?m)^[ \\t]+").ReplaceAll(body, []byte(""))
 
 	var out bytes.Buffer
 	var layoutCtx tmplContext = *ctx
@@ -227,6 +233,7 @@ func renderHTML(body []byte, layoutPath string, ctx *tmplContext) (string, error
 		return "", err
 	}
 
+	// Render & sanitize campaign HTML
 	unsafe := blackfriday.MarkdownCommon(body)
 	bodyHTML := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
 

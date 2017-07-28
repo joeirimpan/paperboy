@@ -31,6 +31,7 @@ version = "0.1.0"
 "github.com/jtacoma/uritemplates"="head"
 "github.com/neelance/graphql-go"="head"
 "github.com/rs/cors"="head"
+"github.com/gholt/blackfridaytext"="head"
 
 # Email libraries for specified purposes
 "github.com/jordan-wright/email"="head" # parse/verify

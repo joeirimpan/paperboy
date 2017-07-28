@@ -46,7 +46,7 @@ func TestRenderOneQuery(t *testing.T) {
 	}
 
 	// Text extracted text and html parts
-	if s := resp.RenderOne.Text; s != "# Hello" {
+	if s := resp.RenderOne.Text; !strings.Contains(s, "[ Hello ]") {
 		t.Errorf("Invalid text: %s", s)
 	}
 	if s := resp.RenderOne.HTML; !strings.Contains(s, "<h1>Hello</h1>") {
